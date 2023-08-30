@@ -32,14 +32,16 @@ void AMusicGameBase::BeginPlay() {
                     TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(pResponse->GetContentAsString());
                     TSharedPtr<FJsonValue> ParsedObject;
 
-                    UE_LOG(LogTemp, Error, TEXT("Got Some Stuff."));
-                    UE_LOG(LogTemp, Error, TEXT("%s"), *pResponse->GetContentAsString());
+                    //UE_LOG(LogTemp, Error, TEXT("Got Some Stuff."));
+                    //UE_LOG(LogTemp, Error, TEXT("%s"), *pResponse->GetContentAsString());
                     if (FJsonSerializer::Deserialize(JsonReader, ParsedObject))
                     {
                         UE_LOG(LogTemp, Error, TEXT("Success In Deserial"));
                         auto GenreArray = ParsedObject->AsObject()->GetArrayField(TEXT("Items"));
                         for (auto jsonObject : GenreArray) {
-                            UE_LOG(LogTemp, Warning, TEXT("We Got Something %s"), *jsonObject.Get()->AsObject()->GetStringField("Name"));
+                            FString GenreName = jsonObject.Get()->AsObject()->GetStringField("Name");
+                            AddGenre(GenreName);
+                            UE_LOG(LogTemp, Warning, TEXT("We Got Something %s"), *GenreName);
                         }
                     }
                 }
