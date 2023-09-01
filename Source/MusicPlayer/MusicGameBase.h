@@ -24,7 +24,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
-
+public:
 	UFUNCTION(BlueprintImplementableEvent)
-	void AddGenre(FString Name);
+	void GenreAdded(const FString& Name);
 };

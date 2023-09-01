@@ -40,7 +40,7 @@ void AMusicGameBase::BeginPlay() {
                         auto GenreArray = ParsedObject->AsObject()->GetArrayField(TEXT("Items"));
                         for (auto jsonObject : GenreArray) {
                             FString GenreName = jsonObject.Get()->AsObject()->GetStringField("Name");
-                            AddGenre(GenreName);
+                            GenreAdded(GenreName);
                             UE_LOG(LogTemp, Warning, TEXT("We Got Something %s"), *GenreName);
                         }
                     }
