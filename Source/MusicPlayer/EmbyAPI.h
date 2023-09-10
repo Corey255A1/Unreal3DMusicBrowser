@@ -3,20 +3,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include <functional>
 /**
  * 
  */
+DECLARE_DELEGATE_OneParam(FWebRequestCompleteDelegate, const FString&);
+DECLARE_DELEGATE_OneParam(FEmbyStringListReceivedDelegate, const TArray<FString>&);
 class MUSICPLAYER_API EmbyAPI
 {
 private:
 	FString m_serverURL;
 	FString m_apiKey;
-	void MakeWebRequestAsync(const FString& route, const FString& params, std::function<void(const FString&)> responseCallback);
-	void ProcessGenreResponse(const FString& response);
+	void MakeWebRequestAsync(const FString& route, const FString& params, FWebRequestCompleteDelegate& responseCallback);
 public:
 	EmbyAPI(const FString& serverURL, const FString& apiKey);
 	~EmbyAPI();
-	void GetGenresAsync(std::function<void(const TArray<FString>&)> genresReceivedCallback);
+	void GetGenresAsync(FEmbyStringListReceivedDelegate& genresReceivedCallback);
+	void GetArtistsOfGenreAsync(const FString& genre, FEmbyStringListReceivedDelegate& artistsReceivedCallback);
+	void GetAlbumsOfArtistsAsync(const FString& artist, FEmbyStringListReceivedDelegate& albumsReceivedCallback);
+	void GetSongsOfAlbumsAsync(const FString& artist, const FString& album, FEmbyStringListReceivedDelegate& songsReceivedCallback);
 
 };

@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-#include <memory>
 #include "EmbyAPI.h"
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
@@ -17,7 +16,7 @@ class MUSICPLAYER_API AMusicGameBase : public AGameModeBase
 	GENERATED_BODY()
 
 protected:
-	std::unique_ptr<EmbyAPI> EmbyConnection;
+	TUniquePtr<EmbyAPI> EmbyConnection;
 
 
 	UPROPERTY(EditDefaultsOnly)
@@ -32,4 +31,13 @@ protected:
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void GenresReceived(const TArray<FString>& GenreList);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ArtistsReceived(const TArray<FString>& ArtistList);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void AlbumsReceived(const TArray<FString>& AlbumList);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SongsReceived(const TArray<FString>& SongList);
 };
