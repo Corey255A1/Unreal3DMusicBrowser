@@ -152,7 +152,7 @@ void EmbyAPI::GetSongsOfAlbumsAsync(const FString& artist, const FString& album,
         }
 
         });
-    // BUG -> Album name such as Day & Age.. the & causes issues because it needs to be encoded
+
     FString urlParameters = FString::Printf(TEXT("&Type=Audio&Recursive=True&Artists=%s&Albums=%s"), *FGenericPlatformHttp::UrlEncode(artist), *FGenericPlatformHttp::UrlEncode(album));
     MakeWebRequestAsync("Items", urlParameters, requestCompleteCallback);
 }
