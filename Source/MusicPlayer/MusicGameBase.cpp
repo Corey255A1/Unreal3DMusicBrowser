@@ -10,22 +10,28 @@ void AMusicGameBase::BeginPlay() {
 	FEmbyStringListReceivedDelegate genreListReceived;
 	genreListReceived.BindUObject(this, &AMusicGameBase::GenresReceived);
 	EmbyConnection->GetGenresAsync(genreListReceived);
-
-	FEmbyStringListReceivedDelegate artistListReceived;
-	artistListReceived.BindUObject(this, &AMusicGameBase::ArtistsReceived);
-	EmbyConnection->GetArtistsOfGenreAsync("Pop", artistListReceived);
-
-	FEmbyStringListReceivedDelegate albumListReceived;
-	albumListReceived.BindUObject(this, &AMusicGameBase::AlbumsReceived);
-	EmbyConnection->GetAlbumsOfArtistsAsync("The Killers", albumListReceived);
-
-	FEmbyStringListReceivedDelegate songListReceived;
-	songListReceived.BindUObject(this, &AMusicGameBase::SongsReceived);
-	EmbyConnection->GetSongsOfAlbumsAsync("The Killers", "Hot Fuss", songListReceived);
-
 }
 
 void AMusicGameBase::Tick(float DeltaTime) {
 
+
+}
+
+void AMusicGameBase::GetArtistsOfGenreAsync(const FString& genre) {
+	FEmbyStringListReceivedDelegate artistListReceived;
+	artistListReceived.BindUObject(this, &AMusicGameBase::ArtistsReceived);
+	EmbyConnection->GetArtistsOfGenreAsync(genre, artistListReceived);
+}
+
+void AMusicGameBase::GetAlbumsOfArtistsAsync(const FString& artist) {
+	FEmbyStringListReceivedDelegate albumListReceived;
+	albumListReceived.BindUObject(this, &AMusicGameBase::AlbumsReceived);
+	EmbyConnection->GetAlbumsOfArtistsAsync(artist, albumListReceived);
+}
+
+void AMusicGameBase::GetSongsOfAlbumsAsync(const FString& artist, const FString& album) {
+	FEmbyStringListReceivedDelegate songListReceived;
+	songListReceived.BindUObject(this, &AMusicGameBase::SongsReceived);
+	EmbyConnection->GetSongsOfAlbumsAsync(artist, album, songListReceived);
 
 }

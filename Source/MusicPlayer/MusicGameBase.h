@@ -40,4 +40,13 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void SongsReceived(const TArray<FString>& SongList);
+
+	UFUNCTION(BlueprintCallable)
+	void GetArtistsOfGenreAsync(const FString& genre);
+
+	UFUNCTION(BlueprintCallable)
+	void GetAlbumsOfArtistsAsync(const FString& artist);
+
+	UFUNCTION(BlueprintCallable)
+	void GetSongsOfAlbumsAsync(const FString& artist, const FString& album);
 };
