@@ -3,11 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EmbySong.h"
 /**
  * 
  */
+
 DECLARE_DELEGATE_OneParam(FWebRequestCompleteDelegate, const FString&);
 DECLARE_DELEGATE_OneParam(FEmbyStringListReceivedDelegate, const TArray<FString>&);
+DECLARE_DELEGATE_OneParam(FEmbyStringIntListReceivedDelegate, const TArray<FEmbySong>&);
+
 class MUSICPLAYER_API EmbyAPI
 {
 private:
@@ -20,6 +24,5 @@ public:
 	void GetGenresAsync(FEmbyStringListReceivedDelegate& genresReceivedCallback);
 	void GetArtistsOfGenreAsync(const FString& genre, FEmbyStringListReceivedDelegate& artistsReceivedCallback);
 	void GetAlbumsOfArtistsAsync(const FString& artist, FEmbyStringListReceivedDelegate& albumsReceivedCallback);
-	void GetSongsOfAlbumsAsync(const FString& artist, const FString& album, FEmbyStringListReceivedDelegate& songsReceivedCallback);
-
+	void GetSongsOfAlbumsAsync(const FString& artist, const FString& album, FEmbyStringIntListReceivedDelegate& songsReceivedCallback);
 };

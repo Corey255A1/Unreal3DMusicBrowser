@@ -4,12 +4,12 @@
 #include "EmbyAPI.h"
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "EmbySong.h"
 #include "MusicGameBase.generated.h"
 
 /**
  * 
  */
-
 UCLASS()
 class MUSICPLAYER_API AMusicGameBase : public AGameModeBase
 {
@@ -39,7 +39,7 @@ public:
 	void AlbumsReceived(const TArray<FString>& AlbumList);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void SongsReceived(const TArray<FString>& SongList);
+	void SongsReceived(const TArray<FEmbySong>& SongList);
 
 	UFUNCTION(BlueprintCallable)
 	void GetArtistsOfGenreAsync(const FString& genre);

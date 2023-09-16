@@ -30,7 +30,7 @@ void AMusicGameBase::GetAlbumsOfArtistsAsync(const FString& artist) {
 }
 
 void AMusicGameBase::GetSongsOfAlbumsAsync(const FString& artist, const FString& album) {
-	FEmbyStringListReceivedDelegate songListReceived;
+	FEmbyStringIntListReceivedDelegate songListReceived;
 	songListReceived.BindUObject(this, &AMusicGameBase::SongsReceived);
 	EmbyConnection->GetSongsOfAlbumsAsync(artist, album, songListReceived);
 
