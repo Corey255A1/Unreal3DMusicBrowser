@@ -1,5 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Corey Wunderlich - WunderVision 2023 
+// https://www.wundervisionengineering.com/
 
 #include "MusicGameBase.h"
 #include "EmbyAPI.h"
@@ -7,9 +7,9 @@
 void AMusicGameBase::BeginPlay() {
 	Super::BeginPlay();
 	EmbyConnection = MakeUnique<EmbyAPI>(ServerURL, APIKey);
-	FEmbyObjectListReceivedDelegate genreListReceived;
-	genreListReceived.BindUObject(this, &AMusicGameBase::GenresReceived);
-	EmbyConnection->GetGenresAsync(genreListReceived);
+	FEmbyObjectListReceivedDelegate GenreListReceived;
+	GenreListReceived.BindUObject(this, &AMusicGameBase::GenresReceived);
+	EmbyConnection->GetGenresAsync(GenreListReceived);
 }
 
 void AMusicGameBase::Tick(float DeltaTime) {
@@ -18,20 +18,20 @@ void AMusicGameBase::Tick(float DeltaTime) {
 }
 
 void AMusicGameBase::GetArtistsOfGenreAsync(const FString& Genre) {
-	FEmbyObjectListReceivedDelegate artistListReceived;
-	artistListReceived.BindUObject(this, &AMusicGameBase::ArtistsReceived);
-	EmbyConnection->GetArtistsOfGenreAsync(Genre, artistListReceived);
+	FEmbyObjectListReceivedDelegate ArtistListReceived;
+	ArtistListReceived.BindUObject(this, &AMusicGameBase::ArtistsReceived);
+	EmbyConnection->GetArtistsOfGenreAsync(Genre, ArtistListReceived);
 }
 
 void AMusicGameBase::GetAlbumsOfArtistsAsync(const FString& Artist) {
-	FEmbyObjectListReceivedDelegate albumListReceived;
-	albumListReceived.BindUObject(this, &AMusicGameBase::AlbumsReceived);
-	EmbyConnection->GetAlbumsOfArtistsAsync(Artist, albumListReceived);
+	FEmbyObjectListReceivedDelegate AlbumListReceived;
+	AlbumListReceived.BindUObject(this, &AMusicGameBase::AlbumsReceived);
+	EmbyConnection->GetAlbumsOfArtistsAsync(Artist, AlbumListReceived);
 }
 
 void AMusicGameBase::GetSongsOfAlbumsAsync(const FString& Artist, const FString& Album) {
-	FEmbySongListReceivedDelegate songListReceived;
-	songListReceived.BindUObject(this, &AMusicGameBase::SongsReceived);
-	EmbyConnection->GetSongsOfAlbumsAsync(Artist, Album, songListReceived);
+	FEmbySongListReceivedDelegate SongListReceived;
+	SongListReceived.BindUObject(this, &AMusicGameBase::SongsReceived);
+	EmbyConnection->GetSongsOfAlbumsAsync(Artist, Album, SongListReceived);
 
 }

@@ -1,5 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Corey Wunderlich - WunderVision 2023 
+// https://www.wundervisionengineering.com/
 
 #include "EmbyAPI.h"
 #include "HttpModule.h"
@@ -20,16 +20,13 @@ EmbyAPI::~EmbyAPI()
 
 void EmbyAPI::MakeWebRequestAsync(const FString& Route, const FString& Params, FWebRequestCompleteDelegate& ResponseCallback)
 {
-
-	//FString encodedParams = FGenericPlatformHttp::UrlEncode(params);
-
-	FString fullURL = FString::Printf(TEXT("%s/emby/%s?api_key=%s%s"), *m_ServerURL, *Route, *m_ApiKey, *Params);
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *fullURL);
-	FHttpModule& httpModule = FHttpModule::Get();
+	FString FullURL = FString::Printf(TEXT("%s/emby/%s?api_key=%s%s"), *m_ServerURL, *Route, *m_ApiKey, *Params);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *FullURL);
+	FHttpModule& HttpModule = FHttpModule::Get();
 	ResponseCallback.Execute(TEXT("WTF"));
-	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> pRequest = httpModule.CreateRequest();
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> pRequest = HttpModule.CreateRequest();
 	pRequest->SetVerb(TEXT("GET"));
-	pRequest->SetURL(fullURL);
+	pRequest->SetURL(FullURL);
 	pRequest->OnProcessRequestComplete().BindLambda(
 		[ResponseCallback](
 			FHttpRequestPtr pRequest,
@@ -58,131 +55,129 @@ void EmbyAPI::MakeWebRequestAsync(const FString& Route, const FString& Params, F
 void EmbyAPI::GetGenresAsync(FEmbyObjectListReceivedDelegate& GenresReceivedCallback)
 {
 	UE_LOG(LogTemp, Error, TEXT("Getting Genres"));
-	FWebRequestCompleteDelegate requestCompleteCallback;
-	requestCompleteCallback.BindLambda([GenresReceivedCallback, this](const FString& response)->void
+	FWebRequestCompleteDelegate RequestCompleteCallback;
+	RequestCompleteCallback.BindLambda([GenresReceivedCallback, this](const FString& Response)->void
 		{
-			TSharedRef<TJsonReader<TCHAR>> jsonReader = TJsonReaderFactory<TCHAR>::Create(response);
-			TSharedPtr<FJsonValue> parsedObject;
-			TArray<FEmbyObject> genreList;
-			if (FJsonSerializer::Deserialize(jsonReader, parsedObject))
+			TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(Response);
+			TSharedPtr<FJsonValue> ParsedObject;
+			TArray<FEmbyObject> GenreList;
+			if (FJsonSerializer::Deserialize(JsonReader, ParsedObject))
 			{
 				UE_LOG(LogTemp, Error, TEXT("Success In Deserial"));
-				auto genreJsonArray = parsedObject->AsObject()->GetArrayField(TEXT("Items"));
-				for (auto jsonObject : genreJsonArray)
+				auto GenreJsonArray = ParsedObject->AsObject()->GetArrayField(TEXT("Items"));
+				for (auto JsonObject : GenreJsonArray)
 				{
-					FEmbyObject embyObject;
-					embyObject.Name = jsonObject.Get()->AsObject()->GetStringField("Name");
-					int32 objectID = jsonObject.Get()->AsObject()->GetIntegerField("Id");
-					embyObject.PrimaryImageURL = FString::Printf(TEXT("%s/emby/Items/%d/Images/Primary?api_key=%s"), *m_ServerURL, objectID, *m_ApiKey);
+					FEmbyObject EmbyObject;
+					EmbyObject.Name = JsonObject.Get()->AsObject()->GetStringField("Name");
+					int32 ObjectID = JsonObject.Get()->AsObject()->GetIntegerField("Id");
+					EmbyObject.PrimaryImageURL = FString::Printf(TEXT("%s/emby/Items/%d/Images/Primary?api_key=%s&maxHeight=220&maxWidth=220"), *m_ServerURL, ObjectID, *m_ApiKey);
 					
-					genreList.Add(embyObject);
+					GenreList.Add(EmbyObject);
 					// UE_LOG(LogTemp, Warning, TEXT("We Got Something %s"), *genreName);
 				}
-				if (genreList.Num() > 0)
+				if (GenreList.Num() > 0)
 				{
-					GenresReceivedCallback.Execute(genreList);
+					GenresReceivedCallback.Execute(GenreList);
 				}
 			}
 
 		});
-	MakeWebRequestAsync("MusicGenres", "&SortOrder=Ascending", requestCompleteCallback);
+	MakeWebRequestAsync("MusicGenres", "&SortOrder=Ascending", RequestCompleteCallback);
 }
 
 void EmbyAPI::GetArtistsOfGenreAsync(const FString& Genre, FEmbyObjectListReceivedDelegate& ArtistsReceivedCallback)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Getting Artists"));
-	FWebRequestCompleteDelegate requestCompleteCallback;
-	requestCompleteCallback.BindLambda([ArtistsReceivedCallback, this](const FString& response)->void
+	FWebRequestCompleteDelegate RequestCompleteCallback;
+	RequestCompleteCallback.BindLambda([ArtistsReceivedCallback, this](const FString& Response)->void
 		{
-			TSharedRef<TJsonReader<TCHAR>> jsonReader = TJsonReaderFactory<TCHAR>::Create(response);
-			TSharedPtr<FJsonValue> parsedObject;
-			TArray<FEmbyObject> artistList;
-			if (FJsonSerializer::Deserialize(jsonReader, parsedObject))
+			TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(Response);
+			TSharedPtr<FJsonValue> ParsedObject;
+			TArray<FEmbyObject> ArtistList;
+			if (FJsonSerializer::Deserialize(JsonReader, ParsedObject))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Success In Deserial"));
-				auto genreJsonArray = parsedObject->AsObject()->GetArrayField(TEXT("Items"));
-				for (auto jsonObject : genreJsonArray)
+				auto GenreJsonArray = ParsedObject->AsObject()->GetArrayField(TEXT("Items"));
+				for (auto JsonObject : GenreJsonArray)
 				{
-					FEmbyObject embyObject;
-					embyObject.Name = jsonObject.Get()->AsObject()->GetStringField("Name");
-					int32 objectID = jsonObject.Get()->AsObject()->GetIntegerField("Id");
-					embyObject.PrimaryImageURL = FString::Printf(TEXT("%s/emby/Items/%d/Images/Primary?api_key=%s"), *m_ServerURL, objectID, *m_ApiKey);
-					artistList.Add(embyObject);
-					// UE_LOG(LogTemp, Warning, TEXT("We Got Something %s"), *genreName);
+					FEmbyObject EmbyObject;
+					EmbyObject.Name = JsonObject.Get()->AsObject()->GetStringField("Name");
+					int32 ObjectID = JsonObject.Get()->AsObject()->GetIntegerField("Id");
+					EmbyObject.PrimaryImageURL = FString::Printf(TEXT("%s/emby/Items/%d/Images/Primary?api_key=%s&maxHeight=220&maxWidth=220"), *m_ServerURL, ObjectID, *m_ApiKey);
+					ArtistList.Add(EmbyObject);
 				}
-				if (artistList.Num() > 0)
+				if (ArtistList.Num() > 0)
 				{
-					ArtistsReceivedCallback.Execute(artistList);
+					ArtistsReceivedCallback.Execute(ArtistList);
 				}
 			}
 
 		});
-	FString urlParameters = FString::Printf(TEXT("&SortOrder=Ascending&Recursive=true&IncludeItemTypes=MusicArtist&Genres=%s"), *FGenericPlatformHttp::UrlEncode(Genre));
-	MakeWebRequestAsync("Items", urlParameters, requestCompleteCallback);
+	FString UrlParameters = FString::Printf(TEXT("&SortOrder=Ascending&Recursive=true&IncludeItemTypes=MusicArtist&Genres=%s"), *FGenericPlatformHttp::UrlEncode(Genre));
+	MakeWebRequestAsync("Items", UrlParameters, RequestCompleteCallback);
 }
 
 void EmbyAPI::GetAlbumsOfArtistsAsync(const FString& Artist, FEmbyObjectListReceivedDelegate& AlbumsReceivedCallback)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Getting Albums"));
-	FWebRequestCompleteDelegate requestCompleteCallback;
-	requestCompleteCallback.BindLambda([AlbumsReceivedCallback, this](const FString& response)->void {
-		TSharedRef<TJsonReader<TCHAR>> jsonReader = TJsonReaderFactory<TCHAR>::Create(response);
-		TSharedPtr<FJsonValue> parsedObject;
-		TArray<FEmbyObject> albumList;
-		if (FJsonSerializer::Deserialize(jsonReader, parsedObject))
+	FWebRequestCompleteDelegate RequestCompleteCallback;
+	RequestCompleteCallback.BindLambda([AlbumsReceivedCallback, this](const FString& Response)->void {
+		TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(Response);
+		TSharedPtr<FJsonValue> ParsedObject;
+		TArray<FEmbyObject> AlbumList;
+		if (FJsonSerializer::Deserialize(JsonReader, ParsedObject))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Success In Deserial"));
-			auto genreJsonArray = parsedObject->AsObject()->GetArrayField(TEXT("Items"));
-			for (auto jsonObject : genreJsonArray)
+			auto GenreJsonArray = ParsedObject->AsObject()->GetArrayField(TEXT("Items"));
+			for (auto JsonObject : GenreJsonArray)
 			{
-				FEmbyObject embyObject;
-				embyObject.Name = jsonObject.Get()->AsObject()->GetStringField("Name");
-				int32 objectID = jsonObject.Get()->AsObject()->GetIntegerField("Id");
-				embyObject.PrimaryImageURL = FString::Printf(TEXT("%s/emby/Items/%d/Images/Primary?api_key=%s"), *m_ServerURL, objectID, *m_ApiKey);
-				albumList.Add(embyObject);
-				// UE_LOG(LogTemp, Warning, TEXT("We Got Something %s"), *genreName);
+				FEmbyObject EmbyObject;
+				EmbyObject.Name = JsonObject.Get()->AsObject()->GetStringField("Name");
+				int32 ObjectID = JsonObject.Get()->AsObject()->GetIntegerField("Id");
+				EmbyObject.PrimaryImageURL = FString::Printf(TEXT("%s/emby/Items/%d/Images/Primary?api_key=%s&maxHeight=220&maxWidth=220"), *m_ServerURL, ObjectID, *m_ApiKey);
+				AlbumList.Add(EmbyObject);
 			}
-			if (albumList.Num() > 0)
+			if (AlbumList.Num() > 0)
 			{
-				AlbumsReceivedCallback.Execute(albumList);
+				AlbumsReceivedCallback.Execute(AlbumList);
 			}
 		}
 
 		});
-	FString urlParameters = FString::Printf(TEXT("&SortOrder=Ascending&Recursive=true&IncludeItemTypes=MusicAlbum&Artists=%s"), *FGenericPlatformHttp::UrlEncode(Artist));
-	MakeWebRequestAsync("Items", urlParameters, requestCompleteCallback);
+	FString UrlParameters = FString::Printf(TEXT("&SortOrder=Ascending&Recursive=true&IncludeItemTypes=MusicAlbum&Artists=%s"), *FGenericPlatformHttp::UrlEncode(Artist));
+	MakeWebRequestAsync("Items", UrlParameters, RequestCompleteCallback);
 }
 
 void EmbyAPI::GetSongsOfAlbumsAsync(const FString& Artist, const FString& Album, FEmbySongListReceivedDelegate& SongsReceivedCallback)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Getting Songs"));
-	FWebRequestCompleteDelegate requestCompleteCallback;
-	requestCompleteCallback.BindLambda([SongsReceivedCallback, this](const FString& response)->void {
-		TSharedRef<TJsonReader<TCHAR>> jsonReader = TJsonReaderFactory<TCHAR>::Create(response);
-		TSharedPtr<FJsonValue> parsedObject;
-		TArray<FEmbySong> songList;
-		if (FJsonSerializer::Deserialize(jsonReader, parsedObject))
+	FWebRequestCompleteDelegate RequestCompleteCallback;
+	RequestCompleteCallback.BindLambda([SongsReceivedCallback, this](const FString& Response)->void {
+		TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(Response);
+		TSharedPtr<FJsonValue> ParsedObject;
+		TArray<FEmbySong> SongList;
+		if (FJsonSerializer::Deserialize(JsonReader, ParsedObject))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Success In Deserial"));
-			auto genreJsonArray = parsedObject->AsObject()->GetArrayField(TEXT("Items"));
-			for (auto jsonObject : genreJsonArray)
+			auto GenreJsonArray = ParsedObject->AsObject()->GetArrayField(TEXT("Items"));
+			for (auto JsonObject : GenreJsonArray)
 			{
-				int32 objectID = jsonObject.Get()->AsObject()->GetIntegerField("Id");
-				FEmbySong songStruct;
-				songStruct.URL = FString::Printf(TEXT("%s/emby/Audio/%d/stream?static=true&api_key=%s"), *m_ServerURL, objectID, *m_ApiKey);
-				songStruct.PrimaryImageURL = FString::Printf(TEXT("%s/emby/Items/%d/Images/Primary?api_key=%s"), *m_ServerURL, objectID, *m_ApiKey);
-				songStruct.Name = jsonObject.Get()->AsObject()->GetStringField("Name");
-				songList.Add(songStruct);
-				// UE_LOG(LogTemp, Warning, TEXT("We Got Something %s"), *genreName);
+				int32 ObjectID = JsonObject.Get()->AsObject()->GetIntegerField("Id");
+				int32 AlbumID = JsonObject.Get()->AsObject()->GetIntegerField("AlbumID");
+				FEmbySong SongStruct;
+				SongStruct.URL = FString::Printf(TEXT("%s/emby/Audio/%d/stream?static=true&api_key=%s"), *m_ServerURL, ObjectID, *m_ApiKey);
+				SongStruct.PrimaryImageURL = FString::Printf(TEXT("%s/emby/Items/%d/Images/Primary?api_key=%s&maxHeight=220&maxWidth=220"), *m_ServerURL, AlbumID, *m_ApiKey);
+				SongStruct.Name = JsonObject.Get()->AsObject()->GetStringField("Name");
+				SongList.Add(SongStruct);
 			}
-			if (songList.Num() > 0)
+			if (SongList.Num() > 0)
 			{
-				SongsReceivedCallback.Execute(songList);
+				SongsReceivedCallback.Execute(SongList);
 			}
 		}
 
 		});
 
-	FString urlParameters = FString::Printf(TEXT("&Type=Audio&Recursive=True&Artists=%s&Albums=%s"), *FGenericPlatformHttp::UrlEncode(Artist), *FGenericPlatformHttp::UrlEncode(Album));
-	MakeWebRequestAsync("Items", urlParameters, requestCompleteCallback);
+	FString UrlParameters = FString::Printf(TEXT("&Type=Audio&Recursive=True&Artists=%s&Albums=%s"), *FGenericPlatformHttp::UrlEncode(Artist), *FGenericPlatformHttp::UrlEncode(Album));
+	MakeWebRequestAsync("Items", UrlParameters, RequestCompleteCallback);
 }

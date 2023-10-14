@@ -1,5 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Corey Wunderlich - WunderVision 2023 
+// https://www.wundervisionengineering.com/
 #pragma once
 
 #include "CoreMinimal.h"
