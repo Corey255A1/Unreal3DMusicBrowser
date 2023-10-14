@@ -3,17 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EmbySong.generated.h"
+#include "FEmbyObject.h"
+#include "FEmbySong.generated.h"
 /**
  * 
  */
 USTRUCT(BlueprintType)
-struct MUSICPLAYER_API FEmbySong
+struct MUSICPLAYER_API FEmbySong: public FEmbyObject
 {
 	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(BlueprintReadWrite)
-	FString Name;
 
 	UPROPERTY(BlueprintReadWrite)
 	FString URL;

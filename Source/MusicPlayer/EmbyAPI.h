@@ -3,26 +3,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EmbySong.h"
+#include "FEmbySong.h"
 /**
  * 
  */
 
 DECLARE_DELEGATE_OneParam(FWebRequestCompleteDelegate, const FString&);
 DECLARE_DELEGATE_OneParam(FEmbyStringListReceivedDelegate, const TArray<FString>&);
-DECLARE_DELEGATE_OneParam(FEmbyStringIntListReceivedDelegate, const TArray<FEmbySong>&);
+DECLARE_DELEGATE_OneParam(FEmbySongListReceivedDelegate, const TArray<FEmbySong>&);
+DECLARE_DELEGATE_OneParam(FEmbyObjectListReceivedDelegate, const TArray<FEmbyObject>&);
 
 class MUSICPLAYER_API EmbyAPI
 {
 private:
-	FString m_serverURL;
-	FString m_apiKey;
-	void MakeWebRequestAsync(const FString& route, const FString& params, FWebRequestCompleteDelegate& responseCallback);
+	FString m_ServerURL;
+	FString m_ApiKey;
+	void MakeWebRequestAsync(const FString& Route, const FString& Params, FWebRequestCompleteDelegate& ResponseCallback);
 public:
-	EmbyAPI(const FString& serverURL, const FString& apiKey);
+	EmbyAPI(const FString& ServerURL, const FString& ApiKey);
 	~EmbyAPI();
-	void GetGenresAsync(FEmbyStringListReceivedDelegate& genresReceivedCallback);
-	void GetArtistsOfGenreAsync(const FString& genre, FEmbyStringListReceivedDelegate& artistsReceivedCallback);
-	void GetAlbumsOfArtistsAsync(const FString& artist, FEmbyStringListReceivedDelegate& albumsReceivedCallback);
-	void GetSongsOfAlbumsAsync(const FString& artist, const FString& album, FEmbyStringIntListReceivedDelegate& songsReceivedCallback);
+	void GetGenresAsync(FEmbyObjectListReceivedDelegate& GenresReceivedCallback);
+	void GetArtistsOfGenreAsync(const FString& Genre, FEmbyObjectListReceivedDelegate& ArtistsReceivedCallback);
+	void GetAlbumsOfArtistsAsync(const FString& Artist, FEmbyObjectListReceivedDelegate& AlbumsReceivedCallback);
+	void GetSongsOfAlbumsAsync(const FString& Artist, const FString& Album, FEmbySongListReceivedDelegate& SongsReceivedCallback);
 };

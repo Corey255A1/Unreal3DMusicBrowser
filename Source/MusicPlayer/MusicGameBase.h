@@ -4,7 +4,7 @@
 #include "EmbyAPI.h"
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "EmbySong.h"
+#include "FEmbySong.h"
 #include "MusicGameBase.generated.h"
 
 /**
@@ -30,23 +30,23 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 public:
 	UFUNCTION(BlueprintImplementableEvent)
-	void GenresReceived(const TArray<FString>& GenreList);
+	void GenresReceived(const TArray<FEmbyObject>& GenreList);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void ArtistsReceived(const TArray<FString>& ArtistList);
+	void ArtistsReceived(const TArray<FEmbyObject>& ArtistList);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void AlbumsReceived(const TArray<FString>& AlbumList);
+	void AlbumsReceived(const TArray<FEmbyObject>& AlbumList);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void SongsReceived(const TArray<FEmbySong>& SongList);
 
 	UFUNCTION(BlueprintCallable)
-	void GetArtistsOfGenreAsync(const FString& genre);
+	void GetArtistsOfGenreAsync(const FString& Genre);
 
 	UFUNCTION(BlueprintCallable)
-	void GetAlbumsOfArtistsAsync(const FString& artist);
+	void GetAlbumsOfArtistsAsync(const FString& Artist);
 
 	UFUNCTION(BlueprintCallable)
-	void GetSongsOfAlbumsAsync(const FString& artist, const FString& album);
+	void GetSongsOfAlbumsAsync(const FString& Artist, const FString& Album);
 };
